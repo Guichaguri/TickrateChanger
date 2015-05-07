@@ -11,7 +11,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.event.HoverEvent;
 import net.minecraft.event.HoverEvent.Action;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.ChatStyle;
@@ -28,7 +27,7 @@ public class TickrateCommand extends CommandBase {
     }
 
     @Override
-    public String getName() {
+    public String getCommandName() {
         return "tickrate";
     }
     @Override
@@ -41,11 +40,11 @@ public class TickrateCommand extends CommandBase {
         return 4;
     }
     @Override
-    public List getAliases() {
+    public List getCommandAliases() {
         return aliases;
     }
     @Override
-    public List addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos) {
+    public List addTabCompletionOptions(ICommandSender sender, String[] args) {
         if(args.length < 1) {
             return null;
         }
@@ -89,7 +88,7 @@ public class TickrateCommand extends CommandBase {
                 tab.add("server");
                 tab.add("client");
                 for(EntityPlayer p : (List<EntityPlayer>) MinecraftServer.getServer().getConfigurationManager().playerEntityList) {
-                    tab.add(p.getName());
+                    tab.add(p.getCommandSenderName());
                 }
             }
         } else if(((args.length == 3) || (args.length == 4)) && (args[0].equalsIgnoreCase("setdefault"))) {
@@ -100,7 +99,7 @@ public class TickrateCommand extends CommandBase {
     }
 
     @Override
-    public void execute(ICommandSender sender, String[] args) throws CommandException {
+    public void processCommand(ICommandSender sender, String[] args) throws CommandException {
         if(args.length < 1) {
             sender.addChatMessage(new ChatComponentTranslation("tickratechanger.show.clientside"));
             chat(sender, c("Current Server Tickrate: ", 'f', 'l'), c((1000F / TickrateChanger.MILISECONDS_PER_TICK) + " ticks per second", 'a'));
@@ -179,13 +178,13 @@ public class TickrateCommand extends CommandBase {
             TickrateAPI.changeServerTickrate(ticksPerSecond);
             chat(sender, c("Server tickrate successfully changed to", 'a'), c(" " + ticksPerSecond, 'f'), c(".", 'a'));
         } else {
-            EntityPlayer p = MinecraftServer.getServer().getConfigurationManager().getPlayerByUsername(args[1]);
+            EntityPlayer p = MinecraftServer.getServer().getConfigurationManager().func_152612_a(args[1]);
             if(p == null) {
                 chat(sender, c("Player not found", 'c'));
                 return;
             }
             TickrateAPI.changeClientTickrate(p, ticksPerSecond);
-            chat(sender, c(p.getName() + "'s client tickrate successfully changed to", 'a'), c(" " + ticksPerSecond, 'f'), c(".", 'a'));
+            chat(sender, c(p.getCommandSenderName() + "'s client tickrate successfully changed to", 'a'), c(" " + ticksPerSecond, 'f'), c(".", 'a'));
         }
     }
 

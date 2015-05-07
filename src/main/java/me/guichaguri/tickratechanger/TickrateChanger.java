@@ -6,10 +6,10 @@ import java.util.Map;
 import me.guichaguri.tickratechanger.api.TickrateAPI;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Timer;
-import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import net.minecraftforge.fml.relauncher.IFMLCallHook;
-import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
-import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin.TransformerExclusions;
+import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import cpw.mods.fml.relauncher.IFMLCallHook;
+import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
+import cpw.mods.fml.relauncher.IFMLLoadingPlugin.TransformerExclusions;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
