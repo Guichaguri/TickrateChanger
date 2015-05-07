@@ -2,7 +2,6 @@ package me.guichaguri.tickratechanger;
 
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
-import java.io.File;
 import java.util.Arrays;
 import me.guichaguri.tickratechanger.TickrateMessageHandler.TickrateMessage;
 import me.guichaguri.tickratechanger.api.TickrateAPI;
@@ -56,8 +55,8 @@ public class TickrateContainer extends DummyModContainer {
         TickrateChanger.NETWORK = NetworkRegistry.INSTANCE.newSimpleChannel("TickrateChanger");
         TickrateChanger.NETWORK.registerMessage(TickrateMessageHandler.class, TickrateMessage.class, 0, Side.CLIENT);
 
-        File config = event.getSuggestedConfigurationFile();
-        Configuration cfg = new Configuration(config);
+        TickrateChanger.CONFIG_FILE = event.getSuggestedConfigurationFile();
+        Configuration cfg = new Configuration(TickrateChanger.CONFIG_FILE);
         TickrateChanger.DEFAULT_TICKRATE = (float)cfg.get("default", "tickrate", 20.0,
                 "Default tickrate. The game will always initialize with this value.").getDouble(20);
         cfg.save();
@@ -95,8 +94,12 @@ public class TickrateContainer extends DummyModContainer {
 
     @SubscribeEvent
     public void connect(ClientConnectedToServerEvent event) {
-        if(event.isLocal) return;
-        TickrateAPI.changeClientTickrate(null, 20F);
+        if(event.isLocal) {
+            TickrateAPI.changeServerTickrate(TickrateChanger.DEFAULT_TICKRATE);
+            TickrateAPI.changeClientTickrate(null, TickrateChanger.DEFAULT_TICKRATE);
+        } else {
+            TickrateAPI.changeClientTickrate(null, 20F);
+        }
     }
 
     @SubscribeEvent

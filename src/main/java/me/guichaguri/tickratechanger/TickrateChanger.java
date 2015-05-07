@@ -1,5 +1,6 @@
 package me.guichaguri.tickratechanger;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.util.Map;
 import me.guichaguri.tickratechanger.api.TickrateAPI;
@@ -21,9 +22,10 @@ public class TickrateChanger implements IFMLLoadingPlugin, IFMLCallHook {
     public static TickrateChanger INSTANCE;
     public static Logger LOGGER = LogManager.getLogger("Tickrate Changer");
     public static SimpleNetworkWrapper NETWORK;
+    public static File CONFIG_FILE = null;
 
     public static final String MODID = "tickratechanger";
-    public static final String VERSION = "1.0.0";
+    public static final String VERSION = "1.0.1";
 
     // Default tickrate - can be changed in the config file
     public static float DEFAULT_TICKRATE = 20;
