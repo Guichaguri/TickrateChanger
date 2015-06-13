@@ -17,14 +17,14 @@ buildscript {
 
 apply plugin: 'forge'
 
-version = "1.0.1"
+version = "1.0.2"
 group= "me.guichaguri.tickratechanger" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "TickrateChanger"
 
 minecraft {
     version = "1.8-11.14.1.1397"
     runDir = "eclipse"
-    
+
     // the mappings can be changed at any time, and must be in the following format.
     // snapshot_YYYYMMDD   snapshot are built nightly.
     // stable_#            stables are built at the discretion of the MCP team.
