@@ -5,8 +5,10 @@ import com.google.common.eventbus.Subscribe;
 import java.util.Arrays;
 import me.guichaguri.tickratechanger.TickrateMessageHandler.TickrateMessage;
 import me.guichaguri.tickratechanger.api.TickrateAPI;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.world.GameRules;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
@@ -95,8 +97,17 @@ public class TickrateContainer extends DummyModContainer {
     @SubscribeEvent
     public void connect(ClientConnectedToServerEvent event) {
         if(event.isLocal) {
-            TickrateAPI.changeServerTickrate(TickrateChanger.DEFAULT_TICKRATE);
-            TickrateAPI.changeClientTickrate(null, TickrateChanger.DEFAULT_TICKRATE);
+            float tickrate = TickrateChanger.DEFAULT_TICKRATE;
+            try {
+                GameRules rules = MinecraftServer.getServer().getEntityWorld().getGameRules();
+                if(rules.hasRule(TickrateChanger.GAME_RULE)) {
+                    tickrate = Float.parseFloat(rules.getGameRuleStringValue(TickrateChanger.GAME_RULE));
+                }
+            } catch(Exception ex) {
+                ex.printStackTrace();
+            }
+            TickrateAPI.changeServerTickrate(tickrate);
+            TickrateAPI.changeClientTickrate(null, tickrate);
         } else {
             TickrateAPI.changeClientTickrate(null, 20F);
         }
@@ -105,7 +116,16 @@ public class TickrateContainer extends DummyModContainer {
     @SubscribeEvent
     public void connect(PlayerLoggedInEvent event) {
         if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) {
-            TickrateAPI.changeClientTickrate(event.player, TickrateChanger.DEFAULT_TICKRATE);
+            float tickrate = TickrateChanger.DEFAULT_TICKRATE;
+            try {
+                GameRules rules = MinecraftServer.getServer().getEntityWorld().getGameRules();
+                if(rules.hasRule(TickrateChanger.GAME_RULE)) {
+                    tickrate = Float.parseFloat(rules.getGameRuleStringValue(TickrateChanger.GAME_RULE));
+                }
+            } catch(Exception ex) {
+                ex.printStackTrace();
+            }
+            TickrateAPI.changeClientTickrate(event.player, tickrate);
         }
     }
 
