@@ -68,7 +68,7 @@ public class TickrateAPI {
     }
 
     /**
-     * Let you change the server tickrate
+     * Let you change the default tickrate
      * Can only be called from server-side. Can also be called from client-side if is singleplayer.
      * This will not update the tickrate from the server/clients.
      * @param ticksPerSecond Tickrate to be set

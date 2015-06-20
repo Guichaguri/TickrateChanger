@@ -23,8 +23,6 @@ public class TickrateTransformer implements IClassTransformer {
         try {
             if(name.equals("net.minecraft.server.MinecraftServer")) {
                 return patchServerTickrate(bytes);
-            } else if(name.equals("net.minecraft.network.NetworkManager") || (name.equals("ej"))) {
-                return patchNetworkManager(bytes);
             }
         } catch(Exception ex) {
             ex.printStackTrace();
@@ -52,42 +50,6 @@ public class TickrateTransformer implements IClassTransformer {
                         if((ldcNode.cst instanceof Long) && ((Long)ldcNode.cst == 50L)) {
                             list.add(new FieldInsnNode(Opcodes.GETSTATIC, "me/guichaguri/tickratechanger/TickrateChanger", "MILISECONDS_PER_TICK", "J"));
                             continue;
-                        }
-                    }
-
-                    list.add(node);
-                }
-
-                method.instructions.clear();
-                method.instructions.add(list);
-            }
-
-        }
-
-        ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
-        classNode.accept(writer);
-        return writer.toByteArray();
-    }
-
-    public byte[] patchNetworkManager(byte[] bytes) {
-        TickrateChanger.LOGGER.info("Applying the new timeout value...");
-
-        ClassNode classNode = new ClassNode();
-        ClassReader classReader = new ClassReader(bytes);
-        classReader.accept(classNode, 0);
-
-        Iterator<MethodNode> methods = classNode.methods.iterator();
-        while(methods.hasNext()) {
-            MethodNode method = methods.next();
-            if((method.name.equals("a") || method.name.equals("provideLanClient")) && (method.desc.startsWith("(Ljava/net/InetAddress;I)"))) {
-                InsnList list = new InsnList();
-                for(AbstractInsnNode node : method.instructions.toArray()) {
-
-                    if(node instanceof LdcInsnNode) {
-                        LdcInsnNode ldcNode = (LdcInsnNode)node;
-                        if((ldcNode.cst instanceof Integer) && ((Integer)ldcNode.cst == 20)) {
-                            TickrateChanger.LOGGER.info("Timeout set.");
-                            ldcNode.cst = 50000;
                         }
                     }
 
