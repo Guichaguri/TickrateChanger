@@ -35,6 +35,10 @@ public class TickrateChanger implements IFMLLoadingPlugin, IFMLCallHook {
     public static float TICKS_PER_SECOND = 20;
     // Server-side tickrate in miliseconds
     public static long MILISECONDS_PER_TICK = 50L;
+    // Min Tickrate
+    public static float MIN_TICKRATE = 0.1F;
+    // Max Tickrate
+    public static float MAX_TICKRATE = 1000;
 
     public TickrateChanger() {
         INSTANCE = this;
