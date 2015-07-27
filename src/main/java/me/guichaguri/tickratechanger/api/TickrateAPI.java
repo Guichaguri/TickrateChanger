@@ -1,5 +1,7 @@
 package me.guichaguri.tickratechanger.api;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.relauncher.Side;
 import java.util.List;
 import me.guichaguri.tickratechanger.TickrateChanger;
 import me.guichaguri.tickratechanger.TickrateMessageHandler.TickrateMessage;
@@ -61,7 +63,9 @@ public class TickrateAPI {
     public static void changeClientTickrate(EntityPlayer player, float ticksPerSecond) {
         if((player == null) || (player.worldObj.isRemote)) { // Client
             if((player != null) && (player != Minecraft.getMinecraft().thePlayer)) return;
-            TickrateChanger.INSTANCE.updateClientTickrate(ticksPerSecond);
+            if(FMLCommonHandler.instance().getSide() == Side.CLIENT) {
+                TickrateChanger.INSTANCE.updateClientTickrate(ticksPerSecond);
+            }
         } else { // Server
             TickrateChanger.NETWORK.sendTo(new TickrateMessage(ticksPerSecond), (EntityPlayerMP)player);
         }
