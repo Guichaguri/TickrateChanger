@@ -62,10 +62,9 @@ public class TickrateAPI {
      */
     public static void changeClientTickrate(EntityPlayer player, float ticksPerSecond) {
         if((player == null) || (player.worldObj.isRemote)) { // Client
+            if(FMLCommonHandler.instance().getSide() != Side.CLIENT) return;
             if((player != null) && (player != Minecraft.getMinecraft().thePlayer)) return;
-            if(FMLCommonHandler.instance().getSide() == Side.CLIENT) {
-                TickrateChanger.INSTANCE.updateClientTickrate(ticksPerSecond);
-            }
+            TickrateChanger.INSTANCE.updateClientTickrate(ticksPerSecond);
         } else { // Server
             TickrateChanger.NETWORK.sendTo(new TickrateMessage(ticksPerSecond), (EntityPlayerMP)player);
         }
