@@ -9,6 +9,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.relauncher.Side;
 
 /**
  * @author Guilherme Chaguri
@@ -60,6 +62,7 @@ public class TickrateAPI {
      */
     public static void changeClientTickrate(EntityPlayer player, float ticksPerSecond) {
         if((player == null) || (player.worldObj.isRemote)) { // Client
+            if(FMLCommonHandler.instance().getSide() != Side.CLIENT) return;
             if((player != null) && (player != Minecraft.getMinecraft().thePlayer)) return;
             TickrateChanger.INSTANCE.updateClientTickrate(ticksPerSecond);
         } else { // Server
