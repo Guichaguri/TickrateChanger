@@ -10,6 +10,8 @@ import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.IFMLCallHook;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin.TransformerExclusions;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -71,6 +73,7 @@ public class TickrateChanger implements IFMLLoadingPlugin, IFMLCallHook {
     }
 
     private Field clientTimer = null;
+    @SideOnly(Side.CLIENT)
     public void updateClientTickrate(float tickrate) {
         if(!TickrateAPI.isValidTickrate(tickrate)) {
             TickrateChanger.LOGGER.info("Ignoring invalid tickrate: " + tickrate);

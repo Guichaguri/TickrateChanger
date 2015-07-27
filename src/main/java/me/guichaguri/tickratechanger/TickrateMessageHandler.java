@@ -2,9 +2,11 @@ package me.guichaguri.tickratechanger;
 
 import io.netty.buffer.ByteBuf;
 import me.guichaguri.tickratechanger.TickrateMessageHandler.TickrateMessage;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.relauncher.Side;
 
 /**
  * @author Guilherme Chaguri
@@ -25,7 +27,9 @@ public class TickrateMessageHandler implements IMessageHandler<TickrateMessage, 
                                         " (You can change the maximum tickrate in the config file)");
             tickrate = TickrateChanger.MAX_TICKRATE;
         }
-        TickrateChanger.INSTANCE.updateClientTickrate(tickrate);
+        if(FMLCommonHandler.instance().getSide() != Side.SERVER) {
+            TickrateChanger.INSTANCE.updateClientTickrate(tickrate);
+        }
         return null;
     }
 
