@@ -39,7 +39,7 @@ public class TickrateCommand extends CommandBase {
 
     @Override
     public int getRequiredPermissionLevel() {
-        return 4;
+        return 2;
     }
     @Override
     public List getCommandAliases() {
