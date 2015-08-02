@@ -21,7 +21,7 @@ public class TickrateTransformer implements IClassTransformer {
         if(bytes == null) return null;
 
         try {
-            if(name.equals("net.minecraft.server.MinecraftServer")) {
+            if(name.equals("net.minecraft.server.MinecraftServer") || name2.equals("net.minecraft.server.MinecraftServer")) {
                 return patchServerTickrate(bytes);
             }
         } catch(Exception ex) {
@@ -43,13 +43,13 @@ public class TickrateTransformer implements IClassTransformer {
             MethodNode method = methods.next();
             if((method.name.equals("run")) && (method.desc.equals("()V"))) {
                 InsnList list = new InsnList();
-                for(AbstractInsnNode node : method.instructions.toArray()) {
+                intrucLoop: for(AbstractInsnNode node : method.instructions.toArray()) {
 
                     if(node instanceof LdcInsnNode) {
                         LdcInsnNode ldcNode = (LdcInsnNode)node;
                         if((ldcNode.cst instanceof Long) && ((Long)ldcNode.cst == 50L)) {
                             list.add(new FieldInsnNode(Opcodes.GETSTATIC, "me/guichaguri/tickratechanger/TickrateChanger", "MILISECONDS_PER_TICK", "J"));
-                            continue;
+                            continue intrucLoop;
                         }
                     }
 
@@ -62,7 +62,7 @@ public class TickrateTransformer implements IClassTransformer {
 
         }
 
-        ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
+        ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
         classNode.accept(writer);
         return writer.toByteArray();
     }
