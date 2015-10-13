@@ -27,7 +27,7 @@ public class TickrateChanger implements IFMLLoadingPlugin, IFMLCallHook {
     public static File CONFIG_FILE = null;
 
     public static final String MODID = "tickratechanger";
-    public static final String VERSION = "1.0.2c";
+    public static final String VERSION = "1.0.2e";
 
     public static final String GAME_RULE = "tickrate";
 
