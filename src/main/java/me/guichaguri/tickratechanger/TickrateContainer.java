@@ -65,6 +65,8 @@ public class TickrateContainer extends DummyModContainer {
                 "Minimum tickrate from servers. Prevents really low tickrate values.").getDouble(0.1);
         TickrateChanger.MAX_TICKRATE = (float)cfg.get("maximum", "tickrate", 1000,
                 "Maximum tickrate from servers. Prevents really high tickrate values.").getDouble(1000);
+        TickrateChanger.SHOW_MESSAGES = cfg.get("miscellaneous", "show-messages", true,
+                "If it will show log messages in the console and the game").getBoolean(true);
         cfg.save();
     }
 
@@ -87,7 +89,7 @@ public class TickrateContainer extends DummyModContainer {
             if(t.getKey().equals("tickratechanger.show.clientside")) {
                 event.message = new ChatComponentText("");
                 event.message.appendSibling(TickrateCommand.c("Your Current Client Tickrate: ", 'f', 'l'));
-                event.message.appendSibling(TickrateCommand.c(TickrateChanger.TICKS_PER_SECOND + " ticks per second", 'a'));
+                event.message.appendSibling(TickrateCommand.c(TickrateAPI.getClientTickrate() + " ticks per second", 'a'));
             }
         }
     }

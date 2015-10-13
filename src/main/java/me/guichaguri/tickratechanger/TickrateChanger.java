@@ -27,7 +27,7 @@ public class TickrateChanger implements IFMLLoadingPlugin, IFMLCallHook {
     public static File CONFIG_FILE = null;
 
     public static final String MODID = "tickratechanger";
-    public static final String VERSION = "1.0.2d";
+    public static final String VERSION = "1.0.2c";
 
     public static final String GAME_RULE = "tickrate";
 
@@ -41,6 +41,8 @@ public class TickrateChanger implements IFMLLoadingPlugin, IFMLCallHook {
     public static float MIN_TICKRATE = 0.1F;
     // Max Tickrate
     public static float MAX_TICKRATE = 1000;
+    // Show Messages
+    public static boolean SHOW_MESSAGES = true;
 
     public TickrateChanger() {
         INSTANCE = this;
@@ -74,12 +76,12 @@ public class TickrateChanger implements IFMLLoadingPlugin, IFMLCallHook {
 
     private Field clientTimer = null;
     @SideOnly(Side.CLIENT)
-    public void updateClientTickrate(float tickrate) {
+    public void updateClientTickrate(float tickrate, boolean log) {
         if(!TickrateAPI.isValidTickrate(tickrate)) {
             TickrateChanger.LOGGER.info("Ignoring invalid tickrate: " + tickrate);
             return;
         }
-        LOGGER.info("Updating client tickrate to " + tickrate);
+        if(log) LOGGER.info("Updating client tickrate to " + tickrate);
         TICKS_PER_SECOND = tickrate;
         Minecraft mc = Minecraft.getMinecraft();
         if(mc == null) return; // Oops!
@@ -100,12 +102,12 @@ public class TickrateChanger implements IFMLLoadingPlugin, IFMLCallHook {
         }
     }
 
-    public void updateServerTickrate(float tickrate) {
+    public void updateServerTickrate(float tickrate, boolean log) {
         if(!TickrateAPI.isValidTickrate(tickrate)) {
             TickrateChanger.LOGGER.info("Ignoring invalid tickrate: " + tickrate);
             return;
         }
-        LOGGER.info("Updating server tickrate to " + tickrate);
+        if(log) LOGGER.info("Updating server tickrate to " + tickrate);
         MILISECONDS_PER_TICK = (long)(1000L / tickrate);
     }
 }
