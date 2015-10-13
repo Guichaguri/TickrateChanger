@@ -7,6 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -23,8 +24,18 @@ public class TickrateAPI {
      * @param ticksPerSecond Tickrate to be set
      */
     public static void changeTickrate(float ticksPerSecond) {
-        changeServerTickrate(ticksPerSecond);
-        changeClientTickrate(ticksPerSecond);
+        changeTickrate(ticksPerSecond, TickrateChanger.SHOW_MESSAGES);
+    }
+
+    /**
+     * Let you change the client & server tickrate
+     * Can only be called from server-side. Can also be called from client-side if is singleplayer.
+     * @param ticksPerSecond Tickrate to be set
+     * @param log If should send console logs
+     */
+    public static void changeTickrate(float ticksPerSecond, boolean log) {
+        changeServerTickrate(ticksPerSecond, log);
+        changeClientTickrate(ticksPerSecond, log);
     }
 
 
@@ -34,7 +45,17 @@ public class TickrateAPI {
      * @param ticksPerSecond Tickrate to be set
      */
     public static void changeServerTickrate(float ticksPerSecond) {
-        TickrateChanger.INSTANCE.updateServerTickrate(ticksPerSecond);
+        changeServerTickrate(ticksPerSecond, TickrateChanger.SHOW_MESSAGES);
+    }
+
+    /**
+     * Let you change the server tickrate
+     * Can only be called from server-side. Can also be called from client-side if is singleplayer.
+     * @param ticksPerSecond Tickrate to be set
+     * @param log If should send console logs
+     */
+    public static void changeServerTickrate(float ticksPerSecond, boolean log) {
+        TickrateChanger.INSTANCE.updateServerTickrate(ticksPerSecond, log);
     }
 
     /**
@@ -43,13 +64,23 @@ public class TickrateAPI {
      * @param ticksPerSecond Tickrate to be set
      */
     public static void changeClientTickrate(float ticksPerSecond) {
+        changeClientTickrate(ticksPerSecond, TickrateChanger.SHOW_MESSAGES);
+    }
+
+    /**
+     * Let you change the all clients tickrate
+     * Can be called either from server-side or client-side
+     * @param ticksPerSecond Tickrate to be set
+     * @param log If should send console logs
+     */
+    public static void changeClientTickrate(float ticksPerSecond, boolean log) {
         MinecraftServer server = MinecraftServer.getServer();
         if((server != null) && (server.getConfigurationManager() != null)) { // Is a server or singleplayer
             for(EntityPlayer p : (List<EntityPlayer>)server.getConfigurationManager().playerEntityList) {
-                changeClientTickrate(p, ticksPerSecond);
+                changeClientTickrate(p, ticksPerSecond, log);
             }
         } else { // Is in menu or a player connected in a server. We can say this is client.
-            changeClientTickrate(null, ticksPerSecond);
+            changeClientTickrate(null, ticksPerSecond, log);
         }
     }
 
@@ -61,10 +92,22 @@ public class TickrateAPI {
      * @param ticksPerSecond Tickrate to be set
      */
     public static void changeClientTickrate(EntityPlayer player, float ticksPerSecond) {
+        changeClientTickrate(player, ticksPerSecond, TickrateChanger.SHOW_MESSAGES);
+    }
+
+    /**
+     * Let you change the all clients tickrate
+     * Can be called either from server-side or client-side.
+     * Will only take effect in the client-side if the player is Minecraft.thePlayer
+     * @param player The Player
+     * @param ticksPerSecond Tickrate to be set
+     * @param log If should send console logs
+     */
+    public static void changeClientTickrate(EntityPlayer player, float ticksPerSecond, boolean log) {
         if((player == null) || (player.worldObj.isRemote)) { // Client
             if(FMLCommonHandler.instance().getSide() != Side.CLIENT) return;
             if((player != null) && (player != Minecraft.getMinecraft().thePlayer)) return;
-            TickrateChanger.INSTANCE.updateClientTickrate(ticksPerSecond);
+            TickrateChanger.INSTANCE.updateClientTickrate(ticksPerSecond, log);
         } else { // Server
             TickrateChanger.NETWORK.sendTo(new TickrateMessage(ticksPerSecond), (EntityPlayerMP)player);
         }
@@ -95,6 +138,34 @@ public class TickrateAPI {
     public static void changeMapTickrate(float ticksPerSecond) {
         World world = MinecraftServer.getServer().getEntityWorld();
         world.getGameRules().setOrCreateGameRule(TickrateChanger.GAME_RULE, ticksPerSecond + "");
+    }
+
+    /**
+     * Only returns the real tickrate if you call the method server-side or in singleplayer
+     * @return The server tickrate or the client server tickrate if it doesn't have access to the real tickrate.
+     */
+    public static float getServerTickrate() {
+        return 1000F / TickrateChanger.MILISECONDS_PER_TICK;
+    }
+
+    /**
+     * Can only be called in the client-side
+     * @return The client tickrate
+     */
+    public static float getClientTickrate() {
+        return TickrateChanger.TICKS_PER_SECOND;
+    }
+
+    /**
+     * Can only be called in the server-side or singleplayer
+     * @return The map tickrate or the server tickrate if it doesn't have a map tickrate.
+     */
+    public static float getMapTickrate() {
+        GameRules rules = MinecraftServer.getServer().getEntityWorld().getGameRules();
+        if(rules.hasRule(TickrateChanger.GAME_RULE)) {
+            return Float.parseFloat(rules.getGameRuleStringValue(TickrateChanger.GAME_RULE));
+        }
+        return getServerTickrate();
     }
 
     /**

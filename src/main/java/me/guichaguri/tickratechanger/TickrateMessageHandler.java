@@ -28,7 +28,7 @@ public class TickrateMessageHandler implements IMessageHandler<TickrateMessage, 
             tickrate = TickrateChanger.MAX_TICKRATE;
         }
         if(FMLCommonHandler.instance().getSide() != Side.SERVER) {
-            TickrateChanger.INSTANCE.updateClientTickrate(tickrate);
+            TickrateChanger.INSTANCE.updateClientTickrate(tickrate, TickrateChanger.SHOW_MESSAGES);
         }
         return null;
     }
