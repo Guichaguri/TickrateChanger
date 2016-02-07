@@ -72,7 +72,6 @@ public class TickrateContainer extends DummyModContainer {
 
     @Subscribe
     public void init(FMLInitializationEvent event) {
-        FMLCommonHandler.instance().bus().register(this);
         MinecraftForge.EVENT_BUS.register(this);
         TickrateAPI.changeTickrate(TickrateChanger.DEFAULT_TICKRATE);
     }
@@ -107,7 +106,7 @@ public class TickrateContainer extends DummyModContainer {
             try {
                 GameRules rules = MinecraftServer.getServer().getEntityWorld().getGameRules();
                 if(rules.hasRule(TickrateChanger.GAME_RULE)) {
-                    tickrate = Float.parseFloat(rules.getGameRuleStringValue(TickrateChanger.GAME_RULE));
+                    tickrate = Float.parseFloat(rules.getString(TickrateChanger.GAME_RULE));
                 }
             } catch(Exception ex) {
                 ex.printStackTrace();
@@ -126,7 +125,7 @@ public class TickrateContainer extends DummyModContainer {
             try {
                 GameRules rules = MinecraftServer.getServer().getEntityWorld().getGameRules();
                 if(rules.hasRule(TickrateChanger.GAME_RULE)) {
-                    tickrate = Float.parseFloat(rules.getGameRuleStringValue(TickrateChanger.GAME_RULE));
+                    tickrate = Float.parseFloat(rules.getString(TickrateChanger.GAME_RULE));
                 }
             } catch(Exception ex) {
                 ex.printStackTrace();

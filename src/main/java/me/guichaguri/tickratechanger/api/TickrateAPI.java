@@ -1,6 +1,5 @@
 package me.guichaguri.tickratechanger.api;
 
-import java.util.List;
 import me.guichaguri.tickratechanger.TickrateChanger;
 import me.guichaguri.tickratechanger.TickrateMessageHandler.TickrateMessage;
 import net.minecraft.client.Minecraft;
@@ -76,7 +75,7 @@ public class TickrateAPI {
     public static void changeClientTickrate(float ticksPerSecond, boolean log) {
         MinecraftServer server = MinecraftServer.getServer();
         if((server != null) && (server.getConfigurationManager() != null)) { // Is a server or singleplayer
-            for(EntityPlayer p : (List<EntityPlayer>)server.getConfigurationManager().playerEntityList) {
+            for(EntityPlayerMP p : server.getConfigurationManager().playerEntityList) {
                 changeClientTickrate(p, ticksPerSecond, log);
             }
         } else { // Is in menu or a player connected in a server. We can say this is client.
@@ -163,7 +162,7 @@ public class TickrateAPI {
     public static float getMapTickrate() {
         GameRules rules = MinecraftServer.getServer().getEntityWorld().getGameRules();
         if(rules.hasRule(TickrateChanger.GAME_RULE)) {
-            return Float.parseFloat(rules.getGameRuleStringValue(TickrateChanger.GAME_RULE));
+            return Float.parseFloat(rules.getString(TickrateChanger.GAME_RULE));
         }
         return getServerTickrate();
     }
