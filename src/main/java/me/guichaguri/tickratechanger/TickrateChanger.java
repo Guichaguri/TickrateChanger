@@ -24,6 +24,7 @@ public class TickrateChanger implements IFMLLoadingPlugin, IFMLCallHook {
     public static TickrateChanger INSTANCE;
     public static Logger LOGGER = LogManager.getLogger("Tickrate Changer");
     public static SimpleNetworkWrapper NETWORK;
+    public static TickrateCommand COMMAND = null;
     public static File CONFIG_FILE = null;
 
     public static final String MODID = "tickratechanger";

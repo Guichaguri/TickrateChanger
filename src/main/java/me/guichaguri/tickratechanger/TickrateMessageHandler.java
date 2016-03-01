@@ -2,6 +2,7 @@ package me.guichaguri.tickratechanger;
 
 import io.netty.buffer.ByteBuf;
 import me.guichaguri.tickratechanger.TickrateMessageHandler.TickrateMessage;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -15,6 +16,10 @@ public class TickrateMessageHandler implements IMessageHandler<TickrateMessage, 
 
     @Override
     public IMessage onMessage(TickrateMessage msg, MessageContext context) {
+        if(context.side == Side.SERVER) {
+            EntityPlayerMP player = context.getServerHandler().playerEntity;
+            if(!TickrateChanger.COMMAND.canCommandSenderUseCommand(player)) return null;
+        }
         float tickrate = msg.getTickrate();
         if(tickrate < TickrateChanger.MIN_TICKRATE) {
             TickrateChanger.LOGGER.info("Tickrate forced to change from " + tickrate + " to " +
@@ -29,6 +34,11 @@ public class TickrateMessageHandler implements IMessageHandler<TickrateMessage, 
         }
         if(FMLCommonHandler.instance().getSide() != Side.SERVER) {
             TickrateChanger.INSTANCE.updateClientTickrate(tickrate, TickrateChanger.SHOW_MESSAGES);
+        }
+        if(context.side == Side.SERVER && TickrateChanger.SHOW_MESSAGES) {
+            TickrateCommand.chat(context.getServerHandler().playerEntity,
+                    TickrateCommand.c("Tickrate successfully changed to", 'a'),
+                    TickrateCommand.c(" " + tickrate, 'f'), TickrateCommand.c(".", 'a'));
         }
         return null;
     }
