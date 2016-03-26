@@ -73,9 +73,9 @@ public class TickrateAPI {
      * @param log If should send console logs
      */
     public static void changeClientTickrate(float ticksPerSecond, boolean log) {
-        MinecraftServer server = MinecraftServer.getServer();
-        if((server != null) && (server.getConfigurationManager() != null)) { // Is a server or singleplayer
-            for(EntityPlayerMP p : server.getConfigurationManager().playerEntityList) {
+        MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+        if((server != null) && (server.getPlayerList() != null)) { // Is a server or singleplayer
+            for(EntityPlayerMP p : server.getPlayerList().getPlayerList()) {
                 changeClientTickrate(p, ticksPerSecond, log);
             }
         } else { // Is in menu or a player connected in a server. We can say this is client.
@@ -135,7 +135,8 @@ public class TickrateAPI {
      * @param ticksPerSecond Tickrate to be set
      */
     public static void changeMapTickrate(float ticksPerSecond) {
-        World world = MinecraftServer.getServer().getEntityWorld();
+        MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+        World world = server.getEntityWorld();
         world.getGameRules().setOrCreateGameRule(TickrateChanger.GAME_RULE, ticksPerSecond + "");
     }
 
@@ -159,8 +160,8 @@ public class TickrateAPI {
      * Can only be called in the server-side or singleplayer
      * @return The map tickrate or the server tickrate if it doesn't have a map tickrate.
      */
-    public static float getMapTickrate() {
-        GameRules rules = MinecraftServer.getServer().getEntityWorld().getGameRules();
+    public static float getMapTickrate(MinecraftServer server) {
+        GameRules rules = server.getEntityWorld().getGameRules();
         if(rules.hasRule(TickrateChanger.GAME_RULE)) {
             return Float.parseFloat(rules.getString(TickrateChanger.GAME_RULE));
         }

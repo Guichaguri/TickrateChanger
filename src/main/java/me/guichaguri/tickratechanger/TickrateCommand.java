@@ -1,20 +1,23 @@
 package me.guichaguri.tickratechanger;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import me.guichaguri.tickratechanger.api.TickrateAPI;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.event.HoverEvent;
-import net.minecraft.event.HoverEvent.Action;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.*;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.event.HoverEvent;
+import net.minecraft.util.text.event.HoverEvent.Action;
 import net.minecraft.world.GameRules;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * @author Guilherme Chaguri
@@ -45,8 +48,9 @@ public class TickrateCommand extends CommandBase {
     public List getCommandAliases() {
         return aliases;
     }
+
     @Override
-    public List addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos) {
+    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
         if(args.length < 1) {
             return null;
         }
@@ -74,7 +78,7 @@ public class TickrateCommand extends CommandBase {
                 tab.add("all");
                 tab.add("server");
                 tab.add("client");
-                for(EntityPlayerMP p : MinecraftServer.getServer().getConfigurationManager().playerEntityList) {
+                for(EntityPlayerMP p : server.getPlayerList().getPlayerList()) {
                     tab.add(p.getDisplayNameString());
                 }
             }
@@ -88,13 +92,13 @@ public class TickrateCommand extends CommandBase {
     }
 
     @Override
-    public void processCommand(ICommandSender sender, String[] args) throws CommandException {
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
         boolean showMessages = TickrateChanger.SHOW_MESSAGES;
         if(args.length < 1) {
-            sender.addChatMessage(new ChatComponentTranslation("tickratechanger.show.clientside"));
+            sender.addChatMessage(new TextComponentTranslation("tickratechanger.show.clientside"));
             chat(sender, c("Current Server Tickrate: ", 'f', 'l'), c(TickrateAPI.getServerTickrate() + " ticks per second", 'a'));
             try {
-                GameRules rules = MinecraftServer.getServer().getEntityWorld().getGameRules();
+                GameRules rules = server.getEntityWorld().getGameRules();
                 if(rules.hasRule(TickrateChanger.GAME_RULE)) {
                     float tickrate = Float.parseFloat(rules.getString(TickrateChanger.GAME_RULE));
                     chat(sender, c("Current Map Tickrate: ", 'f', 'l'), c(tickrate + " ticks per second", 'a'));
@@ -112,19 +116,19 @@ public class TickrateCommand extends CommandBase {
         if(args[0].equalsIgnoreCase("help")) {
             chat(sender, c(" * * Tickrate Changer * * ", '5', 'l'), c("by ", '7', 'o'), c("Guichaguri", 'f', 'o'));
             chat(sender, c("Mouse over the command to see what it does", 'f', 'l'));
-            chat(sender, c("/tickrate 20 ", new ChatComponentText[]{c("Sets the ", 'a'), c("server & client", 'f'), c(" tickrate to 20", 'a')}, '7'));
-            chat(sender, c("/tickrate 20 server ", new ChatComponentText[]{c("Sets the ", 'a'), c("server", 'f'), c(" tickrate to 20", 'a')}, '7'));
-            chat(sender, c("/tickrate 20 client ", new ChatComponentText[]{c("Sets ", 'a'), c("all clients", 'f'), c(" tickrate to 20", 'a')}, '7'));
-            chat(sender, c("/tickrate 20 Notch ", new ChatComponentText[]{c("Sets the ", 'a'), c("Notch's client", 'f'), c(" tickrate to 20", 'a')}, '7'));
-            chat(sender, c("/tickrate setdefault 20 ", new ChatComponentText[]{c("Sets the ", 'a'), c("default", 'f'), c(" tickrate to 20", 'a')}, '7'));
-            chat(sender, c("/tickrate setdefault 20 --dontsave ", new ChatComponentText[]{c("Sets the ", 'a'), c("default", 'f'),
+            chat(sender, c("/tickrate 20 ", new TextComponentString[]{c("Sets the ", 'a'), c("server & client", 'f'), c(" tickrate to 20", 'a')}, '7'));
+            chat(sender, c("/tickrate 20 server ", new TextComponentString[]{c("Sets the ", 'a'), c("server", 'f'), c(" tickrate to 20", 'a')}, '7'));
+            chat(sender, c("/tickrate 20 client ", new TextComponentString[]{c("Sets ", 'a'), c("all clients", 'f'), c(" tickrate to 20", 'a')}, '7'));
+            chat(sender, c("/tickrate 20 Notch ", new TextComponentString[]{c("Sets the ", 'a'), c("Notch's client", 'f'), c(" tickrate to 20", 'a')}, '7'));
+            chat(sender, c("/tickrate setdefault 20 ", new TextComponentString[]{c("Sets the ", 'a'), c("default", 'f'), c(" tickrate to 20", 'a')}, '7'));
+            chat(sender, c("/tickrate setdefault 20 --dontsave ", new TextComponentString[]{c("Sets the ", 'a'), c("default", 'f'),
                                                                                 c(" tickrate to 20 without saving in the config", 'a')}, '7'));
-            chat(sender, c("/tickrate setdefault 20 --dontupdate ", new ChatComponentText[]{c("Sets the ", 'a'), c("default", 'f'),
+            chat(sender, c("/tickrate setdefault 20 --dontupdate ", new TextComponentString[]{c("Sets the ", 'a'), c("default", 'f'),
                                                                                 c(" tickrate to 20 without updating players", 'a')}, '7'));
-            chat(sender, c("/tickrate setdefault 20 --dontsave --dontupdate", new ChatComponentText[]{c("Sets the ", 'a'), c("default", 'f'),
+            chat(sender, c("/tickrate setdefault 20 --dontsave --dontupdate", new TextComponentString[]{c("Sets the ", 'a'), c("default", 'f'),
                                                                                 c(" tickrate to 20 without saving and updating anything", 'a')}, '7'));
-            chat(sender, c("/tickrate setmap 20 ", new ChatComponentText[]{c("Sets the ", 'a'), c("map", 'f'), c(" tickrate to 20", 'a')}, '7'));
-            chat(sender, c("/tickrate setmap 20 --dontupdate ", new ChatComponentText[]{c("Sets the ", 'a'), c("map", 'f'),
+            chat(sender, c("/tickrate setmap 20 ", new TextComponentString[]{c("Sets the ", 'a'), c("map", 'f'), c(" tickrate to 20", 'a')}, '7'));
+            chat(sender, c("/tickrate setmap 20 --dontupdate ", new TextComponentString[]{c("Sets the ", 'a'), c("map", 'f'),
                     c(" tickrate to 20 without updating", 'a')}, '7'));
             chat(sender, c(" * * * * * * * * * * * * * * ", '5', 'l'));
             return;
@@ -201,7 +205,7 @@ public class TickrateCommand extends CommandBase {
             TickrateAPI.changeServerTickrate(ticksPerSecond);
             if(showMessages) chat(sender, c("Server tickrate successfully changed to", 'a'), c(" " + ticksPerSecond, 'f'), c(".", 'a'));
         } else {
-            EntityPlayer p = MinecraftServer.getServer().getConfigurationManager().getPlayerByUsername(args[1]);
+            EntityPlayer p = server.getPlayerList().getPlayerByUsername(args[1]);
             if(p == null) {
                 chat(sender, c("Player not found", 'c'));
                 return;
@@ -211,38 +215,38 @@ public class TickrateCommand extends CommandBase {
         }
     }
 
-    public static void chat(ICommandSender sender, ChatComponentText ... comps) {
-        ChatComponentText top;
+    public static void chat(ICommandSender sender, TextComponentString ... comps) {
+        TextComponentString top;
         if(comps.length == 1) {
             top = comps[0];
         } else {
-            top = new ChatComponentText("");
-            for(ChatComponentText c : comps) {
+            top = new TextComponentString("");
+            for(TextComponentString c : comps) {
                 top.appendSibling(c);
             }
         }
         sender.addChatMessage(top);
     }
 
-    public static ChatComponentText c(String s, ChatComponentText[] hover, char ... chars) {
-        ChatComponentText c = c(s, chars);
-        ChatComponentText hoverComp;
+    public static TextComponentString c(String s, TextComponentString[] hover, char ... chars) {
+        TextComponentString c = c(s, chars);
+        TextComponentString hoverComp;
         if(hover.length == 1) {
             hoverComp = hover[0];
         } else {
-            hoverComp = new ChatComponentText("");
-            for(ChatComponentText txt : hover) {
+            hoverComp = new TextComponentString("");
+            for(TextComponentString txt : hover) {
                 hoverComp.appendSibling(txt);
             }
         }
         c.setChatStyle(c.getChatStyle().setChatHoverEvent(new HoverEvent(Action.SHOW_TEXT, hoverComp)));
         return c;
     }
-    public static ChatComponentText c(String s, char ... chars) {
-        EnumChatFormatting[] formattings = new EnumChatFormatting[chars.length];
+    public static TextComponentString c(String s, char ... chars) {
+        TextFormatting[] formattings = new TextFormatting[chars.length];
         int i = 0;
         for(char c : chars) {
-            enums: for(EnumChatFormatting f : EnumChatFormatting.values()) {
+            enums: for(TextFormatting f : TextFormatting.values()) {
                 if(f.toString().equals("\u00a7" + c)) {
                     formattings[i] = f;
                     break enums;
@@ -252,15 +256,15 @@ public class TickrateCommand extends CommandBase {
         }
         return c(s, formattings);
     }
-    public static ChatComponentText c(String s, EnumChatFormatting ... formattings) {
-        ChatComponentText comp = new ChatComponentText(s);
-        ChatStyle style = comp.getChatStyle();
-        for(EnumChatFormatting f : formattings) {
-            if(f == EnumChatFormatting.BOLD) {
+    public static TextComponentString c(String s, TextFormatting ... formattings) {
+        TextComponentString comp = new TextComponentString(s);
+        Style style = comp.getChatStyle();
+        for(TextFormatting f : formattings) {
+            if(f == TextFormatting.BOLD) {
                 style.setBold(true);
-            } else if(f == EnumChatFormatting.ITALIC) {
+            } else if(f == TextFormatting.ITALIC) {
                 style.setItalic(true);
-            } else if(f == EnumChatFormatting.UNDERLINE) {
+            } else if(f == TextFormatting.UNDERLINE) {
                 style.setUnderlined(true);
             } else {
                 style.setColor(f);

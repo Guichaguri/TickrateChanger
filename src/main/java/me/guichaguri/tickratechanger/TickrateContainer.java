@@ -1,15 +1,14 @@
 package me.guichaguri.tickratechanger;
 
 import com.google.common.eventbus.EventBus;
-import com.google.common.eventbus.Subscribe;
 import java.util.Arrays;
 import me.guichaguri.tickratechanger.TickrateMessageHandler.TickrateMessage;
 import me.guichaguri.tickratechanger.api.TickrateAPI;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.GameRules;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -18,6 +17,7 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.DummyModContainer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.LoadController;
+import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.ModMetadata;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -67,7 +67,7 @@ public class TickrateContainer extends DummyModContainer {
         return true;
     }
 
-    @Subscribe
+    @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         TickrateChanger.NETWORK = NetworkRegistry.INSTANCE.newSimpleChannel("TickrateChanger");
         TickrateChanger.NETWORK.registerMessage(TickrateMessageHandler.class, TickrateMessage.class, 0, Side.CLIENT);
@@ -107,13 +107,13 @@ public class TickrateContainer extends DummyModContainer {
         cfg.save();
     }
 
-    @Subscribe
+    @EventHandler
     public void init(FMLInitializationEvent event) {
         MinecraftForge.EVENT_BUS.register(this);
         TickrateAPI.changeTickrate(TickrateChanger.DEFAULT_TICKRATE);
     }
 
-    @Subscribe
+    @EventHandler
     public void start(FMLServerStartingEvent event) {
         TickrateChanger.COMMAND = new TickrateCommand();
         event.registerServerCommand(TickrateChanger.COMMAND);
@@ -121,10 +121,10 @@ public class TickrateContainer extends DummyModContainer {
 
     @SubscribeEvent
     public void chat(ClientChatReceivedEvent event) {
-        if(event.message instanceof ChatComponentTranslation) {
-            ChatComponentTranslation t = (ChatComponentTranslation)event.message;
+        if(event.message instanceof TextComponentTranslation) {
+            TextComponentTranslation t = (TextComponentTranslation)event.message;
             if(t.getKey().equals("tickratechanger.show.clientside")) {
-                event.message = new ChatComponentText("");
+                event.message = new TextComponentString("");
                 event.message.appendSibling(TickrateCommand.c("Your Current Client Tickrate: ", 'f', 'l'));
                 event.message.appendSibling(TickrateCommand.c(TickrateAPI.getClientTickrate() + " ticks per second", 'a'));
             }
@@ -141,14 +141,6 @@ public class TickrateContainer extends DummyModContainer {
     public void connect(ClientConnectedToServerEvent event) {
         if(event.isLocal) {
             float tickrate = TickrateChanger.DEFAULT_TICKRATE;
-            try {
-                GameRules rules = MinecraftServer.getServer().getEntityWorld().getGameRules();
-                if(rules.hasRule(TickrateChanger.GAME_RULE)) {
-                    tickrate = Float.parseFloat(rules.getString(TickrateChanger.GAME_RULE));
-                }
-            } catch(Exception ex) {
-                ex.printStackTrace();
-            }
             TickrateAPI.changeServerTickrate(tickrate);
             TickrateAPI.changeClientTickrate(null, tickrate);
         } else {
@@ -161,9 +153,12 @@ public class TickrateContainer extends DummyModContainer {
         if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) {
             float tickrate = TickrateChanger.DEFAULT_TICKRATE;
             try {
-                GameRules rules = MinecraftServer.getServer().getEntityWorld().getGameRules();
-                if(rules.hasRule(TickrateChanger.GAME_RULE)) {
-                    tickrate = Float.parseFloat(rules.getString(TickrateChanger.GAME_RULE));
+                MinecraftServer server = event.player.getServer();
+                if(server != null) {
+                    GameRules rules = server.getEntityWorld().getGameRules();
+                    if(rules.hasRule(TickrateChanger.GAME_RULE)) {
+                        tickrate = Float.parseFloat(rules.getString(TickrateChanger.GAME_RULE));
+                    }
                 }
             } catch(Exception ex) {
                 ex.printStackTrace();

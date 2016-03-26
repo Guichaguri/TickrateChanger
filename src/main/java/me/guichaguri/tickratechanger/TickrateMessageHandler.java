@@ -18,7 +18,7 @@ public class TickrateMessageHandler implements IMessageHandler<TickrateMessage, 
     public IMessage onMessage(TickrateMessage msg, MessageContext context) {
         if(context.side == Side.SERVER) {
             EntityPlayerMP player = context.getServerHandler().playerEntity;
-            if(!TickrateChanger.COMMAND.canCommandSenderUseCommand(player)) return null;
+            if(!TickrateChanger.COMMAND.checkPermission(player.mcServer, player)) return null;
         }
         float tickrate = msg.getTickrate();
         if(tickrate < TickrateChanger.MIN_TICKRATE) {
