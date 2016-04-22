@@ -1,12 +1,11 @@
 package me.guichaguri.tickratechanger;
 
-import com.google.common.eventbus.EventBus;
-import java.util.Arrays;
 import me.guichaguri.tickratechanger.TickrateMessageHandler.TickrateMessage;
 import me.guichaguri.tickratechanger.api.TickrateAPI;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.GameRules;
@@ -14,11 +13,9 @@ import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.common.DummyModContainer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.LoadController;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.ModMetadata;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
@@ -34,18 +31,8 @@ import org.lwjgl.input.Keyboard;
 /**
  * @author Guilherme Chaguri
  */
-public class TickrateContainer extends DummyModContainer {
-
-    private static ModMetadata createMetadata() {
-        ModMetadata meta = new ModMetadata();
-        meta.modId = TickrateChanger.MODID;
-        meta.name = "Tickrate Changer";
-        meta.version = TickrateChanger.VERSION;
-        meta.authorList = Arrays.asList("Guichaguri");
-        meta.description = "Let you change the client/server tickrate";
-        meta.url = "http://minecraft.curseforge.com/mc-mods/230233-tickratechanger";
-        return meta;
-    }
+@Mod(modid = TickrateChanger.MODID, name = "Tickrate Changer", version = TickrateChanger.VERSION)
+public class TickrateContainer {
 
     public static boolean KEYS_AVAILABLE = false;
 
@@ -56,16 +43,6 @@ public class TickrateContainer extends DummyModContainer {
     public static KeyBinding KEY_40 = null;
     public static KeyBinding KEY_60 = null;
     public static KeyBinding KEY_100 = null;
-
-    public TickrateContainer() {
-        super(createMetadata());
-    }
-
-    @Override
-    public boolean registerBus(EventBus bus, LoadController controller) {
-        bus.register(this);
-        return true;
-    }
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
@@ -121,12 +98,14 @@ public class TickrateContainer extends DummyModContainer {
 
     @SubscribeEvent
     public void chat(ClientChatReceivedEvent event) {
-        if(event.message instanceof TextComponentTranslation) {
-            TextComponentTranslation t = (TextComponentTranslation)event.message;
+        ITextComponent message = event.getMessage();
+        if(message instanceof TextComponentTranslation) {
+            TextComponentTranslation t = (TextComponentTranslation)message;
             if(t.getKey().equals("tickratechanger.show.clientside")) {
-                event.message = new TextComponentString("");
-                event.message.appendSibling(TickrateCommand.c("Your Current Client Tickrate: ", 'f', 'l'));
-                event.message.appendSibling(TickrateCommand.c(TickrateAPI.getClientTickrate() + " ticks per second", 'a'));
+                message = new TextComponentString("");
+                message.appendSibling(TickrateCommand.c("Your Current Client Tickrate: ", 'f', 'l'));
+                message.appendSibling(TickrateCommand.c(TickrateAPI.getClientTickrate() + " ticks per second", 'a'));
+                event.setMessage(message);
             }
         }
     }
@@ -139,8 +118,19 @@ public class TickrateContainer extends DummyModContainer {
 
     @SubscribeEvent
     public void connect(ClientConnectedToServerEvent event) {
-        if(event.isLocal) {
+        if(event.isLocal()) {
             float tickrate = TickrateChanger.DEFAULT_TICKRATE;
+            try {
+                MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+                if(server != null) {
+                    GameRules rules = server.getEntityWorld().getGameRules();
+                    if(rules.hasRule(TickrateChanger.GAME_RULE)) {
+                        tickrate = Float.parseFloat(rules.getString(TickrateChanger.GAME_RULE));
+                    }
+                }
+            } catch(Exception ex) {
+                ex.printStackTrace();
+            }
             TickrateAPI.changeServerTickrate(tickrate);
             TickrateAPI.changeClientTickrate(null, tickrate);
         } else {

@@ -160,8 +160,8 @@ public class TickrateAPI {
      * Can only be called in the server-side or singleplayer
      * @return The map tickrate or the server tickrate if it doesn't have a map tickrate.
      */
-    public static float getMapTickrate(MinecraftServer server) {
-        GameRules rules = server.getEntityWorld().getGameRules();
+    public static float getMapTickrate() {
+        GameRules rules = FMLCommonHandler.instance().getMinecraftServerInstance().getEntityWorld().getGameRules();
         if(rules.hasRule(TickrateChanger.GAME_RULE)) {
             return Float.parseFloat(rules.getString(TickrateChanger.GAME_RULE));
         }

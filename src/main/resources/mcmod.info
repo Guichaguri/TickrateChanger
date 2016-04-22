@@ -1,0 +1,16 @@
+[
+{
+  "modid": "tickratechanger",
+  "name": "Tickrate Changer",
+  "description": "Let you change the client/server tickrate",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "http://guichaguri.github.io/TickrateChanger/",
+  "updateUrl": "",
+  "authorList": ["Guichaguri"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
