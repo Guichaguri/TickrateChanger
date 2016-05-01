@@ -38,6 +38,8 @@ public class TickrateChanger implements IFMLLoadingPlugin, IFMLCallHook {
     public static float TICKS_PER_SECOND = 20;
     // Server-side tickrate in miliseconds
     public static long MILISECONDS_PER_TICK = 50L;
+    // Sound speed
+    public static float GAME_SPEED = 1;
     // Min Tickrate
     public static float MIN_TICKRATE = 0.1F;
     // Max Tickrate
@@ -84,6 +86,7 @@ public class TickrateChanger implements IFMLLoadingPlugin, IFMLCallHook {
         }
         if(log) LOGGER.info("Updating client tickrate to " + tickrate);
         TICKS_PER_SECOND = tickrate;
+        GAME_SPEED = tickrate / 20F;
         Minecraft mc = Minecraft.getMinecraft();
         if(mc == null) return; // Oops!
         try {

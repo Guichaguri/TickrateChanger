@@ -9,8 +9,10 @@ import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.VarInsnNode;
 
 /**
  * @author Guilherme Chaguri
@@ -23,6 +25,8 @@ public class TickrateTransformer implements IClassTransformer {
         try {
             if(name.equals("net.minecraft.server.MinecraftServer")) {
                 return patchServerTickrate(bytes);
+            } else if(name.equals("paulscode.sound.SoundSystem")) {
+                return patchSoundSystem(bytes);
             }
         } catch(Exception ex) {
             ex.printStackTrace();
@@ -65,6 +69,37 @@ public class TickrateTransformer implements IClassTransformer {
         ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
         classNode.accept(writer);
         return writer.toByteArray();
+    }
+
+    public byte[] patchSoundSystem(byte[] bytes) {
+        TickrateChanger.LOGGER.info("Patching sound system...");
+
+        ClassNode classNode = new ClassNode();
+        ClassReader classReader = new ClassReader(bytes);
+        classReader.accept(classNode, 0);
+
+        Iterator<MethodNode> methods = classNode.methods.iterator();
+        while(methods.hasNext()) {
+            MethodNode method = methods.next();
+            if(method.name.equals("setPitch") && method.desc.equals("(Ljava/lang/String;F)V")) {
+                InsnList inst = new InsnList();
+                inst.add(new VarInsnNode(Opcodes.FLOAD, 2));
+                inst.add(new FieldInsnNode(Opcodes.GETSTATIC, "me/guichaguri/tickratechanger/TickrateChanger", "GAME_SPEED", "F"));
+                inst.add(new InsnNode(Opcodes.FMUL));
+                inst.add(new VarInsnNode(Opcodes.FSTORE, 2));
+                inst.add(method.instructions);
+                method.instructions = inst;
+                break;
+            }
+        }
+
+        ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
+        classNode.accept(writer);
+        return writer.toByteArray();
+    }
+
+    public void setPitch(String sourcename, float value) {
+        value *= TickrateChanger.GAME_SPEED;
     }
 
 
