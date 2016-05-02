@@ -59,9 +59,11 @@ public class TickrateContainer {
         TickrateChanger.MAX_TICKRATE = (float)cfg.get("maximum", "tickrate", 1000,
                 "Maximum tickrate from servers. Prevents really high tickrate values.").getDouble(1000);
         TickrateChanger.SHOW_MESSAGES = cfg.get("miscellaneous", "show-messages", true,
-                "If it will show log messages in the console and the game").getBoolean(true);
+                "Whether it will show log messages in the console and the game").getBoolean(true);
+        TickrateChanger.CHANGE_SOUND = cfg.get("miscellaneous", "change-sound", true,
+                "Whether it will change the sound speed").getBoolean();
         KEYS_AVAILABLE = cfg.get("miscellaneous", "keybindings", false,
-                "If it will have special keys for setting the tickrate").getBoolean(false);
+                "Whether it will have special keys for setting the tickrate").getBoolean(false);
 
         if(KEYS_AVAILABLE) {
             // Keys

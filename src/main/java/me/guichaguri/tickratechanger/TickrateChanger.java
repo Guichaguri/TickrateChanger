@@ -28,7 +28,7 @@ public class TickrateChanger implements IFMLLoadingPlugin, IFMLCallHook {
     public static File CONFIG_FILE = null;
 
     public static final String MODID = "tickratechanger";
-    public static final String VERSION = "1.0.5";
+    public static final String VERSION = "1.0.6";
 
     public static final String GAME_RULE = "tickrate";
 
@@ -46,6 +46,8 @@ public class TickrateChanger implements IFMLLoadingPlugin, IFMLCallHook {
     public static float MAX_TICKRATE = 1000;
     // Show Messages
     public static boolean SHOW_MESSAGES = true;
+    // Change sound speed
+    public static boolean CHANGE_SOUND = true;
 
     public TickrateChanger() {
         INSTANCE = this;
@@ -86,7 +88,7 @@ public class TickrateChanger implements IFMLLoadingPlugin, IFMLCallHook {
         }
         if(log) LOGGER.info("Updating client tickrate to " + tickrate);
         TICKS_PER_SECOND = tickrate;
-        GAME_SPEED = tickrate / 20F;
+        if(CHANGE_SOUND) GAME_SPEED = tickrate / 20F;
         Minecraft mc = Minecraft.getMinecraft();
         if(mc == null) return; // Oops!
         try {
