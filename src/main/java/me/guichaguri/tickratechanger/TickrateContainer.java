@@ -46,6 +46,7 @@ public class TickrateContainer {
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
+		new TickrateChanger();
         TickrateChanger.NETWORK = NetworkRegistry.INSTANCE.newSimpleChannel("TickrateChanger");
         TickrateChanger.NETWORK.registerMessage(TickrateMessageHandler.class, TickrateMessage.class, 0, Side.CLIENT);
         TickrateChanger.NETWORK.registerMessage(TickrateMessageHandler.class, TickrateMessage.class, 1, Side.SERVER);

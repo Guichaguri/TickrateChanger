@@ -239,7 +239,7 @@ public class TickrateCommand extends CommandBase {
                 hoverComp.appendSibling(txt);
             }
         }
-        c.setChatStyle(c.getChatStyle().setChatHoverEvent(new HoverEvent(Action.SHOW_TEXT, hoverComp)));
+        c.setStyle(c.getStyle().setHoverEvent(new HoverEvent(Action.SHOW_TEXT, hoverComp)));
         return c;
     }
     public static TextComponentString c(String s, char ... chars) {
@@ -258,7 +258,7 @@ public class TickrateCommand extends CommandBase {
     }
     public static TextComponentString c(String s, TextFormatting ... formattings) {
         TextComponentString comp = new TextComponentString(s);
-        Style style = comp.getChatStyle();
+        Style style = comp.getStyle();
         for(TextFormatting f : formattings) {
             if(f == TextFormatting.BOLD) {
                 style.setBold(true);
@@ -270,7 +270,7 @@ public class TickrateCommand extends CommandBase {
                 style.setColor(f);
             }
         }
-        comp.setChatStyle(style);
+        comp.setStyle(style);
         return comp;
     }
 }
