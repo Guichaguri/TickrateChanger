@@ -1,8 +1,5 @@
 package me.guichaguri.tickratechanger;
 
-import java.io.File;
-import java.lang.reflect.Field;
-import java.util.Map;
 import me.guichaguri.tickratechanger.api.TickrateAPI;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Timer;
@@ -14,6 +11,10 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.io.File;
+import java.lang.reflect.Field;
+import java.util.Map;
 
 /**
  * @author Guilherme Chaguri
@@ -28,7 +29,7 @@ public class TickrateChanger implements IFMLLoadingPlugin, IFMLCallHook {
     public static File CONFIG_FILE = null;
 
     public static final String MODID = "tickratechanger";
-    public static final String VERSION = "1.0.7";
+    public static final String VERSION = "1.0.8";
 
     public static final String GAME_RULE = "tickrate";
 

@@ -1,18 +1,12 @@
 package me.guichaguri.tickratechanger;
 
-import java.util.Iterator;
 import net.minecraft.launchwrapper.IClassTransformer;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.AbstractInsnNode;
-import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.FieldInsnNode;
-import org.objectweb.asm.tree.InsnList;
-import org.objectweb.asm.tree.InsnNode;
-import org.objectweb.asm.tree.LdcInsnNode;
-import org.objectweb.asm.tree.MethodNode;
-import org.objectweb.asm.tree.VarInsnNode;
+import org.objectweb.asm.tree.*;
+
+import java.util.Iterator;
 
 /**
  * @author Guilherme Chaguri
@@ -97,11 +91,5 @@ public class TickrateTransformer implements IClassTransformer {
         classNode.accept(writer);
         return writer.toByteArray();
     }
-
-    public void setPitch(String sourcename, float value) {
-        value *= TickrateChanger.GAME_SPEED;
-    }
-
-
 
 }
