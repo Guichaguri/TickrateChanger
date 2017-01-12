@@ -17,6 +17,8 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLInterModComms.IMCEvent;
+import net.minecraftforge.fml.common.event.FMLInterModComms.IMCMessage;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -96,6 +98,17 @@ public class TickrateContainer {
     public void start(FMLServerStartingEvent event) {
         TickrateChanger.COMMAND = new TickrateCommand();
         event.registerServerCommand(TickrateChanger.COMMAND);
+    }
+
+    @EventHandler
+    public void imc(IMCEvent event) {
+        for(IMCMessage msg : event.getMessages()) {
+            if(!msg.key.equalsIgnoreCase("tickrate")) continue;
+
+            try {
+                TickrateAPI.processIMC(msg);
+            } catch(Exception ex) {}
+        }
     }
 
     @SubscribeEvent

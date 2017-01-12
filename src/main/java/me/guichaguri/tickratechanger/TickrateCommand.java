@@ -31,12 +31,12 @@ public class TickrateCommand extends CommandBase {
     }
 
     @Override
-    public String getCommandName() {
+    public String getName() {
         return "tickrate";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender) {
+    public String getUsage(ICommandSender sender) {
         return "/tickrate [ticks per second] [all/server/client/playername]";
     }
 
@@ -44,13 +44,14 @@ public class TickrateCommand extends CommandBase {
     public int getRequiredPermissionLevel() {
         return 2;
     }
+
     @Override
-    public List getCommandAliases() {
+    public List getAliases() {
         return aliases;
     }
 
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
         if(args.length < 1) {
             return null;
         }
@@ -78,7 +79,7 @@ public class TickrateCommand extends CommandBase {
                 tab.add("all");
                 tab.add("server");
                 tab.add("client");
-                for(EntityPlayerMP p : server.getPlayerList().getPlayerList()) {
+                for(EntityPlayerMP p : server.getPlayerList().getPlayers()) {
                     tab.add(p.getDisplayNameString());
                 }
             }
@@ -95,7 +96,7 @@ public class TickrateCommand extends CommandBase {
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
         boolean showMessages = TickrateChanger.SHOW_MESSAGES;
         if(args.length < 1) {
-            sender.addChatMessage(new TextComponentTranslation("tickratechanger.show.clientside"));
+            sender.sendMessage(new TextComponentTranslation("tickratechanger.show.clientside"));
             chat(sender, c("Current Server Tickrate: ", 'f', 'l'), c(TickrateAPI.getServerTickrate() + " ticks per second", 'a'));
             try {
                 GameRules rules = server.getEntityWorld().getGameRules();
@@ -225,7 +226,7 @@ public class TickrateCommand extends CommandBase {
                 top.appendSibling(c);
             }
         }
-        sender.addChatMessage(top);
+        sender.sendMessage(top);
     }
 
     public static TextComponentString c(String s, TextComponentString[] hover, char ... chars) {

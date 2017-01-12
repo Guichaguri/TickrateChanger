@@ -5,11 +5,13 @@ import me.guichaguri.tickratechanger.TickrateMessageHandler.TickrateMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.event.FMLInterModComms.IMCMessage;
 import net.minecraftforge.fml.relauncher.Side;
 
 /**
@@ -74,8 +76,8 @@ public class TickrateAPI {
      */
     public static void changeClientTickrate(float ticksPerSecond, boolean log) {
         MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
-        if((server != null) && (server.getPlayerList() != null)) { // Is a server or singleplayer
-            for(EntityPlayerMP p : server.getPlayerList().getPlayerList()) {
+        if(server != null && server.getPlayerList() != null) { // Is a server or singleplayer
+            for(EntityPlayerMP p : server.getPlayerList().getPlayers()) {
                 changeClientTickrate(p, ticksPerSecond, log);
             }
         } else { // Is in menu or a player connected in a server. We can say this is client.
@@ -103,9 +105,9 @@ public class TickrateAPI {
      * @param log If should send console logs
      */
     public static void changeClientTickrate(EntityPlayer player, float ticksPerSecond, boolean log) {
-        if((player == null) || (player.worldObj.isRemote)) { // Client
+        if((player == null) || (player.world.isRemote)) { // Client
             if(FMLCommonHandler.instance().getSide() != Side.CLIENT) return;
-            if((player != null) && (player != Minecraft.getMinecraft().thePlayer)) return;
+            if((player != null) && (player != Minecraft.getMinecraft().player)) return;
             TickrateChanger.INSTANCE.updateClientTickrate(ticksPerSecond, log);
         } else { // Server
             TickrateChanger.NETWORK.sendTo(new TickrateMessage(ticksPerSecond), (EntityPlayerMP)player);
@@ -174,5 +176,52 @@ public class TickrateAPI {
      */
     public static boolean isValidTickrate(float ticksPerSecond) {
         return ticksPerSecond > 0F;
+    }
+
+    /**
+     * Processes IMC messages
+     * Send an IMC message using FMLInterModComms.sendMessage
+     * @hide
+     */
+    public static void processIMC(IMCMessage msg) {
+        String type, player = null;
+        float tickrate;
+        boolean save = false;
+
+        if(msg.isNBTMessage()) {
+
+            NBTTagCompound nbt = msg.getNBTValue();
+
+            type = nbt.hasKey("type") ? nbt.getString("type") : "all";
+            tickrate = nbt.hasKey("tickrate") ? nbt.getFloat("tickrate") : TickrateChanger.DEFAULT_TICKRATE;
+            player = nbt.hasKey("player") ? nbt.getString("player") : null;
+            save = nbt.hasKey("save") && nbt.getBoolean("save");
+
+        } else if(msg.isStringMessage()) {
+
+            type = "all";
+            tickrate = Float.parseFloat(msg.getStringValue());
+
+        } else {
+            return;
+        }
+
+        if(type.equalsIgnoreCase("client")) {
+            MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+            if(player != null && server != null && server.getPlayerList() != null) {
+                EntityPlayer pl = server.getPlayerList().getPlayerByUsername(player);
+                changeClientTickrate(pl, tickrate, false);
+            } else {
+                changeClientTickrate(tickrate, false);
+            }
+        } else if(type.equalsIgnoreCase("server")) {
+            changeServerTickrate(tickrate, false);
+        } else if(type.equalsIgnoreCase("map")) {
+            changeMapTickrate(tickrate);
+        } else if(type.equalsIgnoreCase("default")) {
+            changeDefaultTickrate(tickrate, save);
+        } else {
+            changeTickrate(tickrate, false);
+        }
     }
 }

@@ -6,3 +6,8 @@ Let you change the server/client tickrate
 * [Minecraft Forums](http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-mods/2421222-tickratechanger-change-the-speed-that-your-game)
 * [Commands](https://github.com/Guichaguri/TickrateChanger/wiki/Commands)
 * [API](https://github.com/Guichaguri/TickrateChanger/wiki/API)
+
+## Development
+
+Same old ForgeGradle setup: `gradle setupDecompWorkspace`
+For running it, don't forget to add `-Dfml.coreMods.load=me.guichaguri.tickratechanger.TickrateChanger` to the VM options

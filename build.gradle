@@ -1,5 +1,3 @@
-
-// For those who want the bleeding edge
 buildscript {
     repositories {
         jcenter()
@@ -14,54 +12,36 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "1.0.9"
-group = "me.guichaguri.tickratechanger" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+version = "1.0.10"
+group = "me.guichaguri.tickratechanger"
 archivesBaseName = "TickrateChanger"
 
 minecraft {
-    version = "1.11-13.19.0.2141"
+    version = "1.11.2-13.20.0.2206"
     runDir = "run"
-    mappings = "snapshot_20161111"
+    mappings = "snapshot_20161220"
 }
 
 jar {
     manifest {
         attributes 'FMLCorePlugin': 'me.guichaguri.tickratechanger.TickrateChanger',
-                'FMLCorePluginContainsFMLMod': 'true'
+                   'FMLCorePluginContainsFMLMod': 'true'
     }
 }
 
 dependencies {
-    // you may put jars on which you depend on in ./libs
-    // or you may define them like so..
-    //compile "some.group:artifact:version:classifier"
-    //compile "some.group:artifact:version"
-      
-    // real examples
-    //compile 'com.mod-buildcraft:buildcraft:6.0.8:dev'  // adds buildcraft to the dev env
-    //compile 'com.googlecode.efficient-java-matrix-library:ejml:0.24' // adds ejml to the dev env
-
-    // for more info...
-    // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
-    // http://www.gradle.org/docs/current/userguide/dependency_management.html
 
 }
 
-processResources
-{
-    // this will ensure that this task is redone when the versions change.
+processResources {
     inputs.property "version", project.version
     inputs.property "mcversion", project.minecraft.version
 
-    // replace stuff in mcmod.info, nothing else
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
-                
-        // replace version and mcversion
         expand 'version':project.version, 'mcversion':project.minecraft.version
     }
-        
-    // copy everything else, thats not the mcmod.info
+
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
     }
@@ -69,7 +49,7 @@ processResources
 
 task deobfJar(type: Jar, dependsOn: 'jar') {
     from "build/source/main"
-    classifier "dev"
+    classifier "DEV"
 }
 artifacts {
     archives deobfJar
