@@ -2,8 +2,8 @@ package me.guichaguri.tickratechanger;
 
 import io.netty.buffer.ByteBuf;
 import me.guichaguri.tickratechanger.TickrateMessageHandler.TickrateMessage;
+import me.guichaguri.tickratechanger.api.TickrateAPI;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -20,7 +20,9 @@ public class TickrateMessageHandler implements IMessageHandler<TickrateMessage, 
             EntityPlayerMP player = context.getServerHandler().playerEntity;
             if(!TickrateChanger.COMMAND.checkPermission(player.mcServer, player)) return null;
         }
+
         float tickrate = msg.getTickrate();
+
         if(tickrate < TickrateChanger.MIN_TICKRATE) {
             TickrateChanger.LOGGER.info("Tickrate forced to change from " + tickrate + " to " +
                                         TickrateChanger.MIN_TICKRATE + ", because the value is too low" +
@@ -32,14 +34,19 @@ public class TickrateMessageHandler implements IMessageHandler<TickrateMessage, 
                                         " (You can change the maximum tickrate in the config file)");
             tickrate = TickrateChanger.MAX_TICKRATE;
         }
-        if(FMLCommonHandler.instance().getSide() != Side.SERVER) {
+
+        if(context.side == Side.CLIENT) {
             TickrateChanger.INSTANCE.updateClientTickrate(tickrate, TickrateChanger.SHOW_MESSAGES);
+        } else {
+            TickrateAPI.changeTickrate(tickrate, TickrateChanger.SHOW_MESSAGES);
+
+            if(TickrateChanger.SHOW_MESSAGES) {
+                TickrateCommand.chat(context.getServerHandler().playerEntity,
+                        TickrateCommand.c("Tickrate successfully changed to", 'a'),
+                        TickrateCommand.c(" " + tickrate, 'f'), TickrateCommand.c(".", 'a'));
+            }
         }
-        if(context.side == Side.SERVER && TickrateChanger.SHOW_MESSAGES) {
-            TickrateCommand.chat(context.getServerHandler().playerEntity,
-                    TickrateCommand.c("Tickrate successfully changed to", 'a'),
-                    TickrateCommand.c(" " + tickrate, 'f'), TickrateCommand.c(".", 'a'));
-        }
+
         return null;
     }
 

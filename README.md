@@ -10,4 +10,5 @@ Let you change the server/client tickrate
 ## Development
 
 Same old ForgeGradle setup: `gradle setupDecompWorkspace`
+
 For running it, don't forget to add `-Dfml.coreMods.load=me.guichaguri.tickratechanger.TickrateChanger` to the VM options
