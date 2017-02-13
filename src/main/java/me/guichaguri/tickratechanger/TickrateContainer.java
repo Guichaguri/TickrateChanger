@@ -6,7 +6,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.GameRules;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
@@ -69,13 +68,13 @@ public class TickrateContainer {
 
         if(KEYS_AVAILABLE) {
             // Keys
-            KEY_5 = new KeyBinding("Set tickrate to 5", Keyboard.KEY_NONE, "key.categories.misc");
-            KEY_10 = new KeyBinding("Set tickrate to 10", Keyboard.KEY_NONE, "key.categories.misc");
-            KEY_15 = new KeyBinding("Set tickrate to 15", Keyboard.KEY_NONE, "key.categories.misc");
-            KEY_20 = new KeyBinding("Set tickrate to 20", Keyboard.KEY_NONE, "key.categories.misc");
-            KEY_40 = new KeyBinding("Set tickrate to 40", Keyboard.KEY_NONE, "key.categories.misc");
-            KEY_60 = new KeyBinding("Set tickrate to 60", Keyboard.KEY_NONE, "key.categories.misc");
-            KEY_100 = new KeyBinding("Set tickrate to 100", Keyboard.KEY_NONE, "key.categories.misc");
+            KEY_5 = new KeyBinding("tickratechanger.keybinding.5", Keyboard.KEY_NONE, "key.categories.misc");
+            KEY_10 = new KeyBinding("tickratechanger.keybinding.10", Keyboard.KEY_NONE, "key.categories.misc");
+            KEY_15 = new KeyBinding("tickratechanger.keybinding.15", Keyboard.KEY_NONE, "key.categories.misc");
+            KEY_20 = new KeyBinding("tickratechanger.keybinding.20", Keyboard.KEY_NONE, "key.categories.misc");
+            KEY_40 = new KeyBinding("tickratechanger.keybinding.40", Keyboard.KEY_NONE, "key.categories.misc");
+            KEY_60 = new KeyBinding("tickratechanger.keybinding.60", Keyboard.KEY_NONE, "key.categories.misc");
+            KEY_100 = new KeyBinding("tickratechanger.keybinding.100", Keyboard.KEY_NONE, "key.categories.misc");
             ClientRegistry.registerKeyBinding(KEY_5);
             ClientRegistry.registerKeyBinding(KEY_10);
             ClientRegistry.registerKeyBinding(KEY_15);
@@ -114,14 +113,14 @@ public class TickrateContainer {
     @SubscribeEvent
     public void chat(ClientChatReceivedEvent event) {
         ITextComponent message = event.getMessage();
+
         if(message instanceof TextComponentTranslation) {
+
             TextComponentTranslation t = (TextComponentTranslation)message;
             if(t.getKey().equals("tickratechanger.show.clientside")) {
-                message = new TextComponentString("");
-                message.appendSibling(TickrateCommand.c("Your Current Client Tickrate: ", 'f', 'l'));
-                message.appendSibling(TickrateCommand.c(TickrateAPI.getClientTickrate() + " ticks per second", 'a'));
-                event.setMessage(message);
+                event.setMessage(TickrateCommand.clientTickrateMsg());
             }
+
         }
     }
 
@@ -172,7 +171,7 @@ public class TickrateContainer {
         }
     }
 
-    long lastKeyInputTime = 0;
+    private long lastKeyInputTime = 0;
 
     @SubscribeEvent
     public void key(KeyInputEvent event) {

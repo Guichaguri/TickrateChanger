@@ -12,7 +12,7 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "1.0.10"
+version = "1.0.12"
 group = "me.guichaguri.tickratechanger"
 archivesBaseName = "TickrateChanger"
 
@@ -20,6 +20,8 @@ minecraft {
     version = "1.11.2-13.20.0.2206"
     runDir = "run"
     mappings = "snapshot_20161220"
+
+    at "tickratechanger_at.cfg"
 }
 
 jar {
@@ -45,12 +47,4 @@ processResources {
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
     }
-}
-
-task deobfJar(type: Jar, dependsOn: 'jar') {
-    from "build/source/main"
-    classifier "DEV"
-}
-artifacts {
-    archives deobfJar
 }

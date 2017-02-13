@@ -173,9 +173,11 @@ public class TickrateAPI {
     /**
      * Checks if the tickrate is valid
      * @param ticksPerSecond Tickrate to be checked
+     * @deprecated Used to check if the tickrate > 0, but I decided to let any tickrate be valid according to the config limits
      */
+    @Deprecated
     public static boolean isValidTickrate(float ticksPerSecond) {
-        return ticksPerSecond > 0F;
+        return true;
     }
 
     /**

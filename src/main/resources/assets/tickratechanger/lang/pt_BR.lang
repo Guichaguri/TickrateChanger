@@ -1,0 +1,38 @@
+# Brazilian Portuguese Contributors
+# Guichaguri - https://twitter.com/Guichaguri
+
+tickratechanger.info.server=Tickrate do server atual:
+tickratechanger.info.client=Tickrate da client atual:
+tickratechanger.info.map=Tickrate do mapa atual:
+tickratechanger.info.default=Tickrate padrão:
+tickratechanger.info.value=%d ticks por segundo
+tickratechanger.info.help=Use %s para mais informações
+
+tickratechanger.help.desc=Coloque o mouse em cima dos comandos para ver o que eles fazem
+tickratechanger.help.command.1=Muda a tickrate do server e da client para 20
+tickratechanger.help.command.2=Muda a tickrate do server para 20
+tickratechanger.help.command.3=Muda a tickrate de todas as clients para 20
+tickratechanger.help.command.4=Muda a tickrate da client do Notch para 20
+tickratechanger.help.command.5=Muda a tickrate padrão para 20
+tickratechanger.help.command.6=Muda a tickrate padrão para 20 sem salvar na config
+tickratechanger.help.command.7=Muda a tickrate padrão para 20 sem atualizar jogadores
+tickratechanger.help.command.8=Muda a tickrate padrão para 20 sem salvar ou atualizar nada
+tickratechanger.help.command.9=Muda a tickrate do mapa para 20
+tickratechanger.help.command.10=Muda a tickrate do mapa para 20 sem atualizar o server e a client
+
+tickratechanger.cmd.error=Alguma coisa deu errado!
+tickratechanger.cmd.player.error=O jogador não foi encontrado!
+tickratechanger.cmd.everything.success=A tickrate foi alterada para %d com sucesso
+tickratechanger.cmd.client.success=A tickrate de todos os jogadores conectados foi alterada para %d com sucesso
+tickratechanger.cmd.server.success=A tickrate do server foi alterada para %d com sucesso
+tickratechanger.cmd.player.success=A tickrate da client de %s foi alterado para %d com sucesso
+tickratechanger.cmd.default.success=A tickrate padrão foi alterada para %d com sucesso
+tickratechanger.cmd.map.success=A tickrate do mapa foi alterada para %d com sucesso
+
+tickratechanger.keybinding.5=Tickrate 5
+tickratechanger.keybinding.10=Tickrate 10
+tickratechanger.keybinding.15=Tickrate 15
+tickratechanger.keybinding.20=Tickrate 20
+tickratechanger.keybinding.40=Tickrate 40
+tickratechanger.keybinding.60=Tickrate 60
+tickratechanger.keybinding.100=Tickrate 100

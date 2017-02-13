@@ -41,9 +41,7 @@ public class TickrateMessageHandler implements IMessageHandler<TickrateMessage, 
             TickrateAPI.changeTickrate(tickrate, TickrateChanger.SHOW_MESSAGES);
 
             if(TickrateChanger.SHOW_MESSAGES) {
-                TickrateCommand.chat(context.getServerHandler().playerEntity,
-                        TickrateCommand.c("Tickrate successfully changed to", 'a'),
-                        TickrateCommand.c(" " + tickrate, 'f'), TickrateCommand.c(".", 'a'));
+                context.getServerHandler().playerEntity.sendMessage(TickrateCommand.successTickrateMsg(tickrate));
             }
         }
 
@@ -52,6 +50,7 @@ public class TickrateMessageHandler implements IMessageHandler<TickrateMessage, 
 
     public static class TickrateMessage implements IMessage {
         private float tickrate;
+
         public TickrateMessage() {}
         public TickrateMessage(float tickrate) {
             this.tickrate = tickrate;

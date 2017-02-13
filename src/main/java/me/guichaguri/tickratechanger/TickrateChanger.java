@@ -2,7 +2,6 @@ package me.guichaguri.tickratechanger;
 
 import java.io.File;
 import java.util.Map;
-import me.guichaguri.tickratechanger.api.TickrateAPI;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.IFMLCallHook;
@@ -26,7 +25,7 @@ public class TickrateChanger implements IFMLLoadingPlugin, IFMLCallHook {
     public static File CONFIG_FILE = null;
 
     public static final String MODID = "tickratechanger";
-    public static final String VERSION = "1.0.10";
+    public static final String VERSION = "1.0.12";
 
     public static final String GAME_RULE = "tickrate";
 
@@ -79,28 +78,18 @@ public class TickrateChanger implements IFMLLoadingPlugin, IFMLCallHook {
 
     @SideOnly(Side.CLIENT)
     public void updateClientTickrate(float tickrate, boolean log) {
-        if(!TickrateAPI.isValidTickrate(tickrate)) {
-            TickrateChanger.LOGGER.info("Ignoring invalid tickrate: " + tickrate);
-            return;
-        }
-
         if(log) LOGGER.info("Updating client tickrate to " + tickrate);
 
         TICKS_PER_SECOND = tickrate;
         if(CHANGE_SOUND) GAME_SPEED = tickrate / 20F;
 
         Minecraft mc = Minecraft.getMinecraft();
-        if(mc == null) return; // Oops!
+        if(mc == null) return; // Wut
 
         mc.timer.ticksPerSecond = TICKS_PER_SECOND;
     }
 
     public void updateServerTickrate(float tickrate, boolean log) {
-        if(!TickrateAPI.isValidTickrate(tickrate)) {
-            TickrateChanger.LOGGER.info("Ignoring invalid tickrate: " + tickrate);
-            return;
-        }
-
         if(log) LOGGER.info("Updating server tickrate to " + tickrate);
 
         MILISECONDS_PER_TICK = (long)(1000L / tickrate);

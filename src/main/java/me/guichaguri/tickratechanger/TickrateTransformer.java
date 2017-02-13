@@ -16,6 +16,12 @@ public class TickrateTransformer implements IClassTransformer {
     public byte[] transform(String name, String name2, byte[] bytes) {
         if(bytes == null) return null;
 
+        // Gladly, no obfuscation needed, since all methods and classes patched are obfuscated
+        // MinecraftServer - Main class of the server, the name is not obfuscated because of server scripts
+        // run - Method implemented from Runnable
+        // SoundSystem - Class from the sound system library. Libraries are not obfuscated
+        // setPitch - Also from the sound system library
+
         try {
             if(name.equals("net.minecraft.server.MinecraftServer")) {
                 return patchServerTickrate(bytes);
