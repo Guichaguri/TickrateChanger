@@ -25,7 +25,7 @@ public class TickrateChanger implements IFMLLoadingPlugin, IFMLCallHook {
     public static File CONFIG_FILE = null;
 
     public static final String MODID = "tickratechanger";
-    public static final String VERSION = "1.0.12";
+    public static final String VERSION = "1.0.13";
 
     public static final String GAME_RULE = "tickrate";
 
@@ -86,7 +86,7 @@ public class TickrateChanger implements IFMLLoadingPlugin, IFMLCallHook {
         Minecraft mc = Minecraft.getMinecraft();
         if(mc == null) return; // Wut
 
-        mc.timer.ticksPerSecond = TICKS_PER_SECOND;
+        mc.timer.field_194149_e = 1000F / tickrate;
     }
 
     public void updateServerTickrate(float tickrate, boolean log) {

@@ -7,27 +7,26 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
     }
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "1.0.12"
+version = "1.0.13"
 group = "me.guichaguri.tickratechanger"
 archivesBaseName = "TickrateChanger"
 
 minecraft {
-    version = "1.11.2-13.20.0.2206"
+    version = "1.12-14.21.0.2322"
     runDir = "run"
     mappings = "snapshot_20161220"
-
-    at "tickratechanger_at.cfg"
 }
 
 jar {
     manifest {
         attributes 'FMLCorePlugin': 'me.guichaguri.tickratechanger.TickrateChanger',
-                   'FMLCorePluginContainsFMLMod': 'true'
+                   'FMLCorePluginContainsFMLMod': 'true',
+                   'FMLAT': 'tickratechanger_at.cfg'
     }
 }
 
