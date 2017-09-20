@@ -89,7 +89,7 @@ public class TickrateChanger implements IFMLLoadingPlugin, IFMLCallHook {
         Minecraft mc = Minecraft.getMinecraft();
         if(mc == null) return; // Wut
 
-        mc.timer.field_194149_e = 1000F / tickrate;
+        mc.timer.tickLength = 1000F / tickrate;
     }
 
     public void updateServerTickrate(float tickrate, boolean log) {

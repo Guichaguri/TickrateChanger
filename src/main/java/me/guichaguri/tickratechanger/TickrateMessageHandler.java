@@ -17,7 +17,7 @@ public class TickrateMessageHandler implements IMessageHandler<TickrateMessage, 
     @Override
     public IMessage onMessage(TickrateMessage msg, MessageContext context) {
         if(context.side == Side.SERVER) {
-            EntityPlayerMP player = context.getServerHandler().playerEntity;
+            EntityPlayerMP player = context.getServerHandler().player;
             if(!TickrateChanger.COMMAND.checkPermission(player.mcServer, player)) return null;
         }
 
@@ -41,7 +41,7 @@ public class TickrateMessageHandler implements IMessageHandler<TickrateMessage, 
             TickrateAPI.changeTickrate(tickrate, TickrateChanger.SHOW_MESSAGES);
 
             if(TickrateChanger.SHOW_MESSAGES) {
-                context.getServerHandler().playerEntity.sendMessage(TickrateCommand.successTickrateMsg(tickrate));
+                context.getServerHandler().player.sendMessage(TickrateCommand.successTickrateMsg(tickrate));
             }
         }
 
