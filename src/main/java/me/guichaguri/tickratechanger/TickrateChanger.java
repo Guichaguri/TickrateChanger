@@ -46,7 +46,8 @@ public class TickrateChanger implements IFMLLoadingPlugin, IFMLCallHook {
     // Change sound speed
     public static boolean CHANGE_SOUND = true;
 
-    private TickrateChanger() {}
+    // Forge needs a public constructor
+    public TickrateChanger() {}
 
     public static TickrateChanger getInstance() {
         return INSTANCE;
