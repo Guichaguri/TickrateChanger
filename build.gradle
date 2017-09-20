@@ -17,7 +17,7 @@ group = "me.guichaguri.tickratechanger"
 archivesBaseName = "TickrateChanger"
 
 minecraft {
-    version = "1.12.1-14.22.1.2479"
+    version = "1.12.2-14.23.0.2486"
     runDir = "run"
     mappings = "snapshot_20170624"
 }
