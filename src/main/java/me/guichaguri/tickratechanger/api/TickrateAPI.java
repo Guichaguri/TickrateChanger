@@ -56,7 +56,7 @@ public class TickrateAPI {
      * @param log If should send console logs
      */
     public static void changeServerTickrate(float ticksPerSecond, boolean log) {
-        TickrateChanger.INSTANCE.updateServerTickrate(ticksPerSecond, log);
+        TickrateChanger.getInstance().updateServerTickrate(ticksPerSecond, log);
     }
 
     /**
@@ -108,7 +108,7 @@ public class TickrateAPI {
         if((player == null) || (player.world.isRemote)) { // Client
             if(FMLCommonHandler.instance().getSide() != Side.CLIENT) return;
             if((player != null) && (player != Minecraft.getMinecraft().player)) return;
-            TickrateChanger.INSTANCE.updateClientTickrate(ticksPerSecond, log);
+            TickrateChanger.getInstance().updateClientTickrate(ticksPerSecond, log);
         } else { // Server
             TickrateChanger.NETWORK.sendTo(new TickrateMessage(ticksPerSecond), (EntityPlayerMP)player);
         }

@@ -3,6 +3,7 @@ package me.guichaguri.tickratechanger;
 import java.io.File;
 import java.util.Map;
 import net.minecraft.client.Minecraft;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.IFMLCallHook;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
@@ -18,7 +19,7 @@ import org.apache.logging.log4j.Logger;
 @TransformerExclusions({"me.guichaguri.tickratechanger"})
 public class TickrateChanger implements IFMLLoadingPlugin, IFMLCallHook {
 
-    public static TickrateChanger INSTANCE;
+    private static final TickrateChanger INSTANCE = new TickrateChanger();
     public static Logger LOGGER = LogManager.getLogger("Tickrate Changer");
     public static SimpleNetworkWrapper NETWORK;
     public static TickrateCommand COMMAND = null;
@@ -46,8 +47,10 @@ public class TickrateChanger implements IFMLLoadingPlugin, IFMLCallHook {
     // Change sound speed
     public static boolean CHANGE_SOUND = true;
 
-    public TickrateChanger() {
-        INSTANCE = this;
+    private TickrateChanger() {}
+
+    public static TickrateChanger getInstance() {
+        return INSTANCE;
     }
 
     @Override
