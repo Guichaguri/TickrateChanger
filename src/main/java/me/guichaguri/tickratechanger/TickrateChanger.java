@@ -3,7 +3,6 @@ package me.guichaguri.tickratechanger;
 import java.io.File;
 import java.util.Map;
 import net.minecraft.client.Minecraft;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.IFMLCallHook;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
