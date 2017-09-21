@@ -17,12 +17,23 @@ group = "me.guichaguri.tickratechanger"
 archivesBaseName = "TickrateChanger"
 
 minecraft {
-    version = "1.12-14.21.0.2322"
+    version = "1.12.2-14.23.0.2486"
     runDir = "run"
-    mappings = "snapshot_20161220"
+    mappings = "snapshot_20170624"
 }
 
 jar {
+    manifest {
+        attributes 'FMLCorePlugin': 'me.guichaguri.tickratechanger.TickrateChanger',
+                   'FMLCorePluginContainsFMLMod': 'true',
+                   'FMLAT': 'tickratechanger_at.cfg'
+    }
+}
+
+// Create deobf dev jars
+task deobfJar(type: Jar) {
+    from sourceSets.main.output
+    classifier = 'deobf'
     manifest {
         attributes 'FMLCorePlugin': 'me.guichaguri.tickratechanger.TickrateChanger',
                    'FMLCorePluginContainsFMLMod': 'true',
@@ -46,4 +57,9 @@ processResources {
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
     }
+}
+
+artifacts {
+	archives deobfJar 
+	archives jar
 }
