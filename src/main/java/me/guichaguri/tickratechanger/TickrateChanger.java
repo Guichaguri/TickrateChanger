@@ -18,7 +18,7 @@ import org.apache.logging.log4j.Logger;
 @TransformerExclusions({"me.guichaguri.tickratechanger"})
 public class TickrateChanger implements IFMLLoadingPlugin, IFMLCallHook {
 
-    private static final TickrateChanger INSTANCE = new TickrateChanger();
+    public static TickrateChanger INSTANCE;
     public static Logger LOGGER = LogManager.getLogger("Tickrate Changer");
     public static SimpleNetworkWrapper NETWORK;
     public static TickrateCommand COMMAND = null;
@@ -46,11 +46,8 @@ public class TickrateChanger implements IFMLLoadingPlugin, IFMLCallHook {
     // Change sound speed
     public static boolean CHANGE_SOUND = true;
 
-    // Forge needs a public constructor
-    public TickrateChanger() {}
-
-    public static TickrateChanger getInstance() {
-        return INSTANCE;
+    public TickrateChanger() {
+        INSTANCE = this;
     }
 
     @Override

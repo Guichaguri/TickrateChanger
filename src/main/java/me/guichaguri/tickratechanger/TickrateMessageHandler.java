@@ -36,7 +36,7 @@ public class TickrateMessageHandler implements IMessageHandler<TickrateMessage, 
         }
 
         if(context.side == Side.CLIENT) {
-            TickrateChanger.getInstance().updateClientTickrate(tickrate, TickrateChanger.SHOW_MESSAGES);
+            TickrateChanger.INSTANCE.updateClientTickrate(tickrate, TickrateChanger.SHOW_MESSAGES);
         } else {
             TickrateAPI.changeTickrate(tickrate, TickrateChanger.SHOW_MESSAGES);
 
