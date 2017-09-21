@@ -34,7 +34,7 @@ jar {
 task deobfJar(type: Jar) {
     from sourceSets.main.output
     classifier = 'deobf'
-	manifest {
+    manifest {
         attributes 'FMLCorePlugin': 'me.guichaguri.tickratechanger.TickrateChanger',
                    'FMLCorePluginContainsFMLMod': 'true',
                    'FMLAT': 'tickratechanger_at.cfg'
